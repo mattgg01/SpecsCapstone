@@ -12,17 +12,18 @@
     {% block head %}{% endblock %}
   </head>
 	<nav>
-		<ol class="nav-bar">
+		<ul class="nav-bar">
 			<li class="nav-link"><a href="{{url_for('home')}}">Home</a></li>
       {% if current_user.is_authenticated %}
-      <li class="nav-link"><a href="{{url_for('logout')}}">Logout</a></li>
       <li class="nav-link"><a href="{{url_for('order_track')}}">Track Orders</a></li>
+      <li class="nav-link"><a href="{{url_for('order')}}">Order</a></li>
+      <li class="nav-link"><a href="{{url_for('logout')}}">Logout</a></li>
       {% else %} 
       <li class="nav-link"><a href="{{url_for('login')}}">Login</a></li>
       <li class="nav-link"><a href="{{url_for('register')}}">Register</a></li>
       {% endif %}
-      <li class="nav-link"><a href="{{url_for('order')}}">Order</a></li>
-		</ol>
+
+    </ul>
 	</nav>
   <body>
     {% block body %}{% endblock %}

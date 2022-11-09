@@ -1,3 +1,14 @@
+body { 
+	background: url('https://images2.alphacoders.com/901/901414.jpg') no-repeat center center fixed; 
+	-webkit-background-size: cover;
+	-moz-background-size: cover;
+	-o-background-size: cover;
+	background-size: cover;
+}
+.welcome{
+    color: aquamarine;
+    text-align: center;
+}
 .orders {
     display: flex;
     flex-direction: column;
@@ -14,17 +25,20 @@
 .listitems{
     margin-left: 25px;
 }
-.nav-bar{
+/* .nav-bar{
+    align-content: center;
+    vertical-align: center;
     margin: auto;
-    width: 20%;
     padding: 10px;
     display: flex;
-}
+} */
 .nav-link{
     font-family:fantasy;
     border: 2px solid purple;
-    margin-right: 2em;
+    margin-right: 3em;
     text-align: center;
+    width: 180px;
+    align-items: center;
 }
 h2{
     font-size:larger;
@@ -35,8 +49,40 @@ h3{
 }
 
 input[name="qty"] {
-    width: 30px;
+    width: 45px;
 
     display: inline-block;
   }
 
+  nav {
+	border-bottom: 2px solid rgb(22, 23, 23);
+	max-width: 100%;
+	text-align: center;
+    margin-top: 15px;
+}
+ol {
+	padding-left: 0;
+}
+.nav-link {
+	margin-right: 2em;
+	display: inline;
+}
+.orders{
+    background-color: white;
+}
+h1[name="User"]{
+    color: white;
+    margin-left: 30px;
+}
+
+form[name="orderform"]{
+    display: flex;
+    flex-direction: column;
+    margin-left: 40px;
+    width: 300px;
+    height: 10%;
+    border: 2px solid black;
+    border-radius: 15px;
+    padding: 15px;
+    background-color: white;
+}

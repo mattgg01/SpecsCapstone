@@ -3,7 +3,7 @@
 {% block body %}
 
     
-    <h1>{{current_user.first_name}}'s Orders</h1>
+    <h1 name="User">{{current_user.first_name}}'s Orders</h1>
         <ul class="orders">
             {% for ord in orders %}
             <h2 class="listtitle">Charbroiled Burgers</h3>
@@ -11,10 +11,15 @@
             <li class="listitems">Order ID: {{ord.order_id}}</li>
             <h3>Change Quantity?</h3>
             <div>
-            <form method="put" action="/update_order">
-            {{form.hidden_tag()}}
-            {{form.qty.label}}{{form.qty}}<br>
-            {{form.submit}}
+            <form method="post" action="/update_order/{{ord.order_id}}">
+            {{updateform.hidden_tag()}}
+            {{updateform.qty.label}}{{updateform.qty}}<br>
+            
+            {{updateform.submit}}
+            </form>
+            <form method="post" action="delete_order/{{ord.order_id}}">
+                {{deleteform.hidden_tag()}}
+                {{deleteform.submit}}
             </form>
             </div>
             {% endfor %}

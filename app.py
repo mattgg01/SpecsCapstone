@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, flash, session, redirect, url_for, abort
 from model import connect_to_db, db, User, load_user, login_manager, Orders
-from forms import LoginForm, RegistrationForm, OrderForm, UpdateOrder
+from forms import LoginForm, RegistrationForm, OrderForm, UpdateOrder, DeleteOrder
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 from jinja2 import StrictUndefined
 
@@ -40,9 +40,37 @@ def welcome_user():
 @app.route('/order_track', methods=['GET','PUT','DELETE'])
 @login_required
 def order_track():
-    form = UpdateOrder()
+    updateform = UpdateOrder()
+    deleteform = DeleteOrder()
     orders = Orders.query.filter_by(cust_id=current_user.id)
-    return render_template('order_track.html', orders=orders, form=form)
+    if updateform.validate_on_submit():
+        orders = Orders.query.filter_by(cust_id=current_user.id)
+        
+
+    return render_template('order_track.html', deleteform=deleteform, orders=orders, updateform=updateform)
+
+
+
+#LATE NIGHT STUFF PROBABLY WON'T USE. IF YOU DONT USE MOVE update_order back to order_track function
+@app.route('/update_order/<order_id>', methods=['POST'])
+def update_order(order_id):
+    update_order = UpdateOrder()
+    order = Orders.query.get(order_id)
+    if update_order.validate_on_submit():
+        order.qty = update_order.qty.data
+        db.session.add(order)
+        db.session.commit()
+    return redirect(url_for('order_track'))
+
+@app.route('/delete_order/<order_id>', methods=['POST'])
+def delete_order(order_id):
+    delete_order = DeleteOrder()
+    order = Orders.query.get(order_id)
+    if delete_order.validate_on_submit():
+        db.session.delete(order)
+        db.session.commit()
+    return redirect(url_for('order_track'))
+
 
 
 #Logout users

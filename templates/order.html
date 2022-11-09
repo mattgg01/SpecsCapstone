@@ -2,7 +2,7 @@
 {% block title %} Order {% endblock %}
 
 {% block body %}
-    <form method="post" action="/order">
+    <form name="orderform" method="post" action="/order">
         {{form.hidden_tag()}}
         {{form.qty.label}}{{form.qty}}<br>
         {{form.submit}}

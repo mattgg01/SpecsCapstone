@@ -3,7 +3,7 @@
 {% block body %}
     <div class="jumbotron">
     {% if current_user.is_authenticated %}
-    <p>WELCOME, {{current_user.first_name}}!</p>
+    <h1 class="welcome">Welcome, {{current_user.first_name}}!</h1>
     {% else %}
     <p>Please login or register</p>
     {% endif %}

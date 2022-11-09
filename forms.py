@@ -17,6 +17,9 @@ class UpdateOrder(FlaskForm):
     qty = IntegerField('')
     submit = SubmitField('Confirm Changes')
 
+class DeleteOrder(FlaskForm):
+    submit = SubmitField('Delete Order')
+
 class RegistrationForm(FlaskForm):
     email = StringField('Email', validators=[DataRequired(), Email()])
     password = StringField('Password', validators=[DataRequired(),EqualTo('pass_confirm',message='Passwords must match!')])
