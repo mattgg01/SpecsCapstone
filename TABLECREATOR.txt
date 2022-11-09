@@ -1,0 +1,21 @@
+CREATE TABLE "users" (
+	"user_id" SERIAL PRIMARY KEY,
+	"email" TEXT,
+	"password_hash" VARCHAR,
+	"first_name" TEXT,
+	"last_name" TEXT,
+	"address" TEXT,
+	"phone" integer,
+	"newsletter" BOOLEAN
+);
+
+
+
+ALTER TABLE users
+ADD password_hash VARCHAR; -U postgres
+
+
+ALTER TABLE users
+  DROP COLUMN password;
+
+DROP TABLE users;

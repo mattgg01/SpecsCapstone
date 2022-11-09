@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block title %} Order {% endblock %}
+
+{% block body %}
+    <form method="post" action="/order">
+        {{form.hidden_tag()}}
+        {{form.qty.label}}{{form.qty}}<br>
+        {{form.submit}}
+    </form>
+
+{% endblock %}
