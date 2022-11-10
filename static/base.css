@@ -6,8 +6,11 @@ body {
 	background-size: cover;
 }
 .welcome{
-    color: aquamarine;
+    color: orange;
     text-align: center;
+}
+.orderspacer{
+    margin-bottom: 5px;
 }
 .orders {
     display: flex;
@@ -18,6 +21,7 @@ body {
     border: 2px solid black;
     border-radius: 15px;
     padding: 15px;
+    margin-bottom: 10px;
 }
 .listtitle{
     margin-left: 5px;
@@ -34,11 +38,15 @@ body {
 } */
 .nav-link{
     font-family:fantasy;
-    border: 2px solid purple;
+    border: 2px solid orangered;
     margin-right: 3em;
     text-align: center;
     width: 180px;
     align-items: center;
+    background-color:rgb(97, 52, 23);
+}
+a{
+    color: rgb(251, 146, 0);
 }
 h2{
     font-size:larger;
@@ -54,8 +62,7 @@ input[name="qty"] {
     display: inline-block;
   }
 
-  nav {
-	border-bottom: 2px solid rgb(22, 23, 23);
+nav {
 	max-width: 100%;
 	text-align: center;
     margin-top: 15px;
@@ -85,4 +92,35 @@ form[name="orderform"]{
     border-radius: 15px;
     padding: 15px;
     background-color: white;
+}
+
+.homedesc{
+    padding: 1rem;
+	width: 30%;
+    height: 30%;
+	margin: 4rem auto;
+	font-family: "Open Sans", sans-serif;
+	background-color: rgb(247, 185, 118);
+	box-shadow: 5px 10px 10px orange;
+    border-radius: 5px;
+}
+h1[name="hometitle"]{
+    text-align: center;
+    padding: 6px;
+	width: 145px;
+    height: 60px;
+	margin: 4rem auto;
+	font-family: "Open Sans", sans-serif;
+	background-color: rgb(247, 185, 118);
+	box-shadow: 5px 10px 10px orange;
+    border-radius: 5px;
+}
+
+img[name="logo"]{
+    width: 250px;
+    height: 250px;
+  display: inline;
+  margin-top: -110px;
+  margin-left: auto;
+  margin-right: auto;
 }

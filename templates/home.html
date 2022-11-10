@@ -2,10 +2,15 @@
 {% block title %} Home {% endblock %}
 {% block body %}
     <div class="jumbotron">
-    {% if current_user.is_authenticated %}
-    <h1 class="welcome">Welcome, {{current_user.first_name}}!</h1>
-    {% else %}
-    <p>Please login or register</p>
-    {% endif %}
     </div>
+
+    <content>
+		<h1 name="hometitle">About</h1>
+
+		<p class="homedesc">
+			Buffalo Burger is a family-owned bar & grill offering good times year round. Our resturant is the perfect detour off the I-15 crossover between Arizona and Utah. With nearby points of interest, you have the perfect balance of being close to local attractions & conveniences, while enjoying a relaxed country atmosphere at the same time. Thanks to all of you, we are proud to be celebrating 15 years of successful ownership.
+		
+		</p>
+
+	</content>
 {% endblock %}

@@ -25,7 +25,13 @@
 
     </ul>
 	</nav>
+  {% if current_user.is_authenticated %}
+  <h1 class="welcome">Welcome back, {{current_user.first_name}}!</h1>
+  {% else %}
+  <h1 class="welcome">Please login or register</h1>
+  {% endif %}
   <body>
+    <img name="logo"src="https://i.imgur.com/5Y2VMSY.png">
     {% block body %}{% endblock %}
 
 

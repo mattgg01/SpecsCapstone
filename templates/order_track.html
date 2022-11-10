@@ -4,8 +4,9 @@
 
     
     <h1 name="User">{{current_user.first_name}}'s Orders</h1>
+        {% for ord in orders %}
         <ul class="orders">
-            {% for ord in orders %}
+            <div class="orderspacer">
             <h2 class="listtitle">Charbroiled Burgers</h3>
             <li class="listitems">Quantity: {{ord.qty}}</li>
             <li class="listitems">Order ID: {{ord.order_id}}</li>
@@ -22,7 +23,9 @@
                 {{deleteform.submit}}
             </form>
             </div>
-            {% endfor %}
+        </div>
         </ul>
+            {% endfor %}
+
     
 {% endblock %}
