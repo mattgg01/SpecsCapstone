@@ -2,83 +2,74 @@ import os
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
-from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
+from flask_login import LoginManager, UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
+from datetime import datetime
+
 login_manager = LoginManager()
 
 @login_manager.user_loader
-def load_user(user_id):
-    return User.query.get(user_id)
+def load_user(customer_id):
+    return User.query.get(customer_id)
 
 
 app = Flask(__name__)
 db = SQLAlchemy()
 Migrate(app,db)
 
+class User(UserMixin, db.Model):
+    __tablename__ = 'customers'
 
-class User(db.Model,UserMixin):
+    def get_id(self):
+        return str(self.customer_id)
+    customer_id = db.Column(db.Integer, primary_key=True)
+    email = db.Column(db.String(120), unique=True, index=True, nullable=False)
+    password_hash = db.Column(db.String(128), nullable=False)
+    first_name = db.Column(db.String(60), nullable=False)
+    last_name = db.Column(db.String(60), nullable=False)
+    address = db.Column(db.String(100), nullable=False)
+    phone = db.Column(db.String(20), nullable=False)
+    newsletter = db.Column(db.Boolean, nullable=False, default=False)
+    orders = db.relationship('Order', primaryjoin='User.customer_id == Order.customer_id', backref='customers')
 
-    __tablename__ = "users"
+    @property
+    def password(self):
+        raise AttributeError('password is not a readable attribute')
 
-    id = db.Column(db.Integer, autoincrement=True, primary_key=True)
-    email = db.Column(db.String, unique=True)
-    password_hash = db.Column(db.String)
-    first_name = db.Column(db.String(35))
-    last_name = db.Column(db.String(55))
-    address = db.Column(db.String(90))
-    phone = db.Column(db.String)
-    newsletter = db.Column(db.Boolean)
+    @password.setter
+    def password(self, password):
+        self.password_hash = generate_password_hash(password)
 
-    def __init__(self, email, password, first_name, last_name, address, phone, newsletter):
-        self.email = email
-        self.password_hash = password ##Add password hasher later
-        self.first_name = first_name
-        self.last_name = last_name
-        self.address = address
-        self.phone = phone
-        self.newsletter = newsletter
-
-    def check_password(self,password):
-        if self.password_hash == password:
-            return True
-        else:
-            return False
-
+    def check_password(self, password):
+        return check_password_hash(self.password_hash, password)
 
     def __repr__(self):
-        return f"<User user_id={self.id} email={self.email} first_name={self.first_name} last_name={self.last_name} phone={self.phone} address={self.address} newsletter={self.newsletter}>"
-
-class Orders(db.Model):
-    __tablename__ = "orders"
-    cust_id = db.Column(db.Integer, db.ForeignKey('users.id'))
-    order_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
-    qty = db.Column(db.Integer)
-  
-
-    def __init__(self, qty, cust_id, ):
-        self.cust_id = cust_id
-        self.qty = qty
-        
-
-    def __repr__(self):
-        return f'Charboiled Burgers,\n Qty: {self.qty} \n Order ID: {self.order_id}'
-
-class Drinks():
-    __tablename__ = "drinks"
+        return f'<Customer {self.email}>'
 
 
-    drink_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
-    drink_name = db.Column(db.String(20))
-    price = db.Column(db.Float)
+class Order(db.Model):
+    __tablename__ = 'orders'
+    order_id = db.Column(db.Integer, primary_key=True)
+    customer_id = db.Column(db.Integer, db.ForeignKey('customers.customer_id'), nullable=False)
+    first_name = db.Column(db.String(120), nullable=False)
+    last_name = db.Column(db.String(120), nullable=False)
+    email = db.Column(db.String(120), nullable=False)
+    phone = db.Column(db.String(120), nullable=False)
+    quantity_burgers = db.Column(db.Integer, nullable=False)
+    quantity_drinks = db.Column(db.Integer, nullable=False)
+    delivery_address = db.Column(db.String(240), nullable=False)
+    burgers = db.relationship('Burger', backref='orders', lazy=True)
 
-    def __init__(self, drink_name, price):
-        self.drink_name = drink_name
-        self.price = price
-
-    def __repr__(self):
-        return f"<Drink drink_name={self.drink_name} drink_id={self.drink_id} price={self.price}"
-
-
+class Burger(db.Model):
+    __tablename__ = "burgers"
+    burger_id = db.Column(db.Integer, primary_key=True)
+    cheese = db.Column(db.Boolean, nullable=False)
+    tomatoes = db.Column(db.Boolean, nullable=False)
+    lettuce = db.Column(db.Boolean, nullable=False)
+    onion = db.Column(db.Boolean, nullable=False)
+    bacon = db.Column(db.Boolean, nullable=False)
+    ketchup = db.Column(db.Boolean, nullable=False)
+    order_id = db.Column(db.Integer, db.ForeignKey('orders.order_id'), nullable=False)
 
 
 

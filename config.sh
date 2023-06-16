@@ -1,1 +1,1 @@
-export POSTGRES_URI="postgresql://postgres:postgres@localhost:5432/burgers"
+export POSTGRES_URI="postgresql://postgres:postgres@localhost:5432/foodapp"

@@ -1,24 +1,27 @@
-from flask import Flask, render_template, request, flash, session, redirect, url_for, abort
-from model import connect_to_db, db, User, load_user, login_manager, Orders
-from forms import LoginForm, RegistrationForm, OrderForm, UpdateOrder, DeleteOrder
-from flask_login import LoginManager, login_user, login_required, logout_user, current_user
+from flask import Flask, render_template, redirect, url_for, flash, request
+from flask_login import LoginManager, login_user, logout_user, login_required, current_user
+from forms import RegistrationForm,LoginForm,DeleteOrder,OrderForm,BurgerForm
+from model import User, Order, connect_to_db,db,Burger
 from jinja2 import StrictUndefined
-
 
 app = Flask(__name__)
 app.secret_key = "dev"
 app.jinja_env.undefined = StrictUndefined
-login_manager = LoginManager()
 
+# Initialize Flask-Login
+login_manager = LoginManager()
 login_manager.init_app(app)
 
+# Flask-Login user_loader callback
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(user_id)
 
-##End of Boiler
+# Homepage
+@app.route("/")
+def index():
+    return redirect(url_for('home'))
 
-#Home 
 @app.route("/home")
 def home():
     """View homepage."""
@@ -29,100 +32,66 @@ def home():
 def unauthorized():
     return redirect(url_for('login'))
 
-
-#Welcome users
+# Welcome page for authenticated users
 @app.route('/welcome')
 @login_required
 def welcome_user():
     return render_template('welcome_user.html')
 
-
+# Page to view and manage orders
 @app.route('/order_track', methods=['GET','PUT','DELETE'])
 @login_required
 def order_track():
-    updateform = UpdateOrder()
     deleteform = DeleteOrder()
-    orders = Orders.query.filter_by(cust_id=current_user.id)
-    if updateform.validate_on_submit():
-        orders = Orders.query.filter_by(cust_id=current_user.id)
-        
+    orders = Order.query.filter_by(customer_id=current_user.customer_id)
 
-    return render_template('order_track.html', deleteform=deleteform, orders=orders, updateform=updateform)
+    return render_template('order_track.html', deleteform=deleteform, orders=orders)
 
 
-
-#LATE NIGHT STUFF PROBABLY WON'T USE. IF YOU DONT USE MOVE update_order back to order_track function
-@app.route('/update_order/<order_id>', methods=['POST'])
-def update_order(order_id):
-    update_order = UpdateOrder()
-    order = Orders.query.get(order_id)
-    if update_order.validate_on_submit():
-        order.qty = update_order.qty.data
-        db.session.add(order)
-        db.session.commit()
-    return redirect(url_for('order_track'))
-
+# Delete order API
 @app.route('/delete_order/<order_id>', methods=['POST'])
 def delete_order(order_id):
-    delete_order = DeleteOrder()
-    order = Orders.query.get(order_id)
-    if delete_order.validate_on_submit():
+    delete_order_form = DeleteOrder()
+    order = Order.query.get(order_id)
+    if delete_order_form.validate_on_submit():
         db.session.delete(order)
         db.session.commit()
     return redirect(url_for('order_track'))
 
-
-
-#Logout users
+# Logout API
 @app.route('/logout')
 @login_required
 def logout():
     logout_user()
     flash("You logged out!")
     return redirect(url_for('home'))
-
-
-
-
+    
 #login users
-
 @app.route('/login',methods=['GET','POST'])
 def login():
     form = LoginForm()
     if form.validate_on_submit():
         user = User.query.filter_by(email=form.email.data).first()
-        if user.check_password(form.password.data) == True:
+        if user is not None and user.check_password(form.password.data):
             login_user(user)
             flash('Logged in successfully!')
-            print("Password is correct")
             return redirect(url_for('home'))
-
         else:
-            print("Incorrect password")
+            flash('Invalid email or password')
+    return render_template('login.html', form=form)
 
-            next = request.args.get('next')
-
-            if next == None or not next[0]=='/':
-                next = url_for('home')
-                
-
-            return redirect(next)
-
-    return render_template('login.html',form=form)
-    
-
+#register users
 @app.route('/register',methods=['GET','POST'])
 def register():
     form = RegistrationForm()
 
     if form.validate_on_submit():
-        user = User(email=form.email.data,
-                    password=form.password.data,
-                    first_name=form.first_name.data,
+        user = User(first_name=form.first_name.data,
                     last_name=form.last_name.data,
+                    email=form.email.data,
                     address=form.address.data,
                     phone=form.phone.data,
-                    newsletter=form.newsletter.data
+                    newsletter=form.newsletter.data,
                     )
         db.session.add(user)
         db.session.commit()
@@ -130,20 +99,49 @@ def register():
         return redirect(url_for('login'))
     return render_template('register.html',form=form)
 
-@app.route('/order',methods=['GET','POST'])
+@app.route('/order', methods=['GET', 'POST'])
 def order():
     form = OrderForm()
     if form.validate_on_submit():
-        order = Orders(qty=form.qty.data,
-                    cust_id=current_user.id
-                    )
+        # create order
+        order = Order(
+            first_name=form.first_name.data,
+            last_name=form.last_name.data,
+            email=form.email.data,
+            phone_number=form.phone_number.data,
+            quantity_burgers=form.quantity_burgers.data,
+            quantity_drinks=form.quantity_drinks.data,
+            delivery_address=form.delivery_address.data
+        )
         db.session.add(order)
         db.session.commit()
-        flash("Thanks for ordering!")
-        return redirect(url_for('order_track'))
-    return render_template('order.html',form=form)
+        
+        # create burgers for order
+        for burger_form in form.burgers.entries:
+            burger_data = burger_form.data
+            cheese = burger_data.get('cheese', False)
+            tomatoes = burger_data.get('tomatoes', False)
+            lettuce = burger_data.get('lettuce', False)
+            onion = burger_data.get('onion', False)
+            bacon = burger_data.get('bacon', False)
+            ketchup = burger_data.get('ketchup', False)
+            
+            if cheese or tomatoes or lettuce or onion or bacon or ketchup:
+                burger = Burger(
+                    cheese=cheese,
+                    tomatoes=tomatoes,
+                    lettuce=lettuce,
+                    onion=onion,
+                    bacon=bacon,
+                    ketchup=ketchup,
+                    order=order
+                )
+                db.session.add(burger)
+                db.session.commit()
 
-
+        flash('Your order has been submitted!', 'success')
+        return redirect(url_for('home'))
+    return render_template('order.html', title='Order', form=form)
 
 
 

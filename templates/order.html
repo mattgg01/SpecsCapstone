@@ -1,11 +1,24 @@
 {% extends "base.html" %}
-{% block title %} Order {% endblock %}
 
 {% block body %}
-    <form name="orderform" method="post" action="/order">
-        {{form.hidden_tag()}}
-        {{form.qty.label}}{{form.qty}}<br>
-        {{form.submit}}
-    </form>
+  <h1>Order</h1>
+  <form method="POST" action="">
+    {{ form.hidden_tag() }}
 
+    <h2>Burgers</h2>
+    {% for burger in form.burgers %}
+      <div>
+        <h3>Burger {{ loop.index }}</h3>
+        {{ burger.cheese }} {{ burger.cheese.label }}<br>
+        {{ burger.tomatoes }} {{ burger.tomatoes.label }}<br>
+        {{ burger.lettuce }} {{ burger.lettuce.label }}<br>
+        {{ burger.onion }} {{ burger.onion.label }}<br>
+        {{ burger.bacon }} {{ burger.bacon.label }}<br>
+        {{ burger.ketchup }} {{ burger.ketchup.label }}<br>
+      </div>
+    {% endfor %}
+
+    <button type="submit" name="add_burger" value="true">Add Burger</button>
+    <button type="submit" name="submit" value="true">Submit Order</button>
+  </form>
 {% endblock %}

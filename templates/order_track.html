@@ -1,31 +1,36 @@
 {% extends "base.html" %}
 {% block title %} Track your Order {% endblock %}
 {% block body %}
-
-    
-    <h1 name="User">{{current_user.first_name}}'s Orders</h1>
-        {% for ord in orders %}
+    <h1 name="Customer">{{current_user.first_name}}'s Orders</h1>
+    {% for ord in orders %}
         <ul class="orders">
             <div class="orderspacer">
-            <h2 class="listtitle">Charbroiled Burgers</h3>
-            <li class="listitems">Quantity: {{ord.qty}}</li>
-            <li class="listitems">Order ID: {{ord.order_id}}</li>
-            <h3>Change Quantity?</h3>
-            <div>
-            <form method="post" action="/update_order/{{ord.order_id}}">
-            {{updateform.hidden_tag()}}
-            {{updateform.qty.label}}{{updateform.qty}}<br>
-            
-            {{updateform.submit}}
-            </form>
-            <form method="post" action="delete_order/{{ord.order_id}}">
-                {{deleteform.hidden_tag()}}
-                {{deleteform.submit}}
-            </form>
+                <h2 class="listtitle">Charbroiled Burgers</h3>
+                <li class="listitems">Quantity: {{ord.quantity_burgers}}</li>
+                <li class="listitems">Order ID: {{ord.order_id}}</li>
+                <h3>Toppings:</h3>
+                <ul class="toppings">
+                    {% if ord.burgers %}
+                        {% for burger in ord.burgers %}
+                            <li class="listitems">{{ "Cheese" if burger.cheese else "" }}
+                                {{ ", Tomatoes" if burger.tomatoes else "" }}
+                                {{ ", Lettuce" if burger.lettuce else "" }}
+                                {{ ", Onion" if burger.onion else "" }}
+                                {{ ", Bacon" if burger.bacon else "" }}
+                                {{ ", Ketchup" if burger.ketchup else "" }}</li>
+                        {% endfor %}
+                    {% else %}
+                        <li>No toppings added</li>
+                    {% endif %}
+                </ul>
+                <h3>Change Quantity?</h3>
+                <div>
+                    <form method="post" action="delete_order/{{ord.order_id}}">
+                        {{deleteform.hidden_tag()}}
+                        {{deleteform.submit}}
+                    </form>
+                </div>
             </div>
-        </div>
         </ul>
-            {% endfor %}
-
-    
+    {% endfor %}
 {% endblock %}

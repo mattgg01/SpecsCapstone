@@ -124,3 +124,22 @@ img[name="logo"]{
   margin-left: auto;
   margin-right: auto;
 }
+form[name="loginform"]{
+    background-color: orange;
+    width: 200px;
+    padding: 5px;
+    border-radius: 5px;
+}
+h1[name="logintitle"]{
+    background-color: orange;
+    width: 150px;
+    text-align: center;
+    padding: 5px;
+    border-radius: 5px;
+}
+form[name="registerform"]{
+    background-color: orange;
+    width: 325px;
+    padding: 5px;
+    border-radius: 5px;
+}

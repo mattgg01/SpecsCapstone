@@ -1,21 +1,35 @@
-CREATE TABLE "users" (
-	"user_id" SERIAL PRIMARY KEY,
-	"email" TEXT,
-	"password_hash" VARCHAR,
-	"first_name" TEXT,
-	"last_name" TEXT,
-	"address" TEXT,
-	"phone" integer,
-	"newsletter" BOOLEAN
+ CREATE TABLE customers (
+  customer_id SERIAL PRIMARY KEY,
+  first_name VARCHAR(50) NOT NULL,
+  last_name VARCHAR(50) NOT NULL,
+  email VARCHAR(100) UNIQUE NOT NULL,
+  phone VARCHAR(20) NOT NULL,
+  address VARCHAR(255) NOT NULL
+);
+CREATE TABLE orders (
+  order_id SERIAL PRIMARY KEY,
+  customer_id INTEGER REFERENCES customers(customer_id),
+  order_date TIMESTAMP DEFAULT NOW(),
+  quantity_burgers INTEGER NOT NULL,
+  quantity_drinks INTEGER NOT NULL,
+  is_completed BOOLEAN NOT NULL DEFAULT FALSE,
+  pickup_driver_id INTEGER REFERENCES delivery_drivers(driver_id),
+  delivery_address VARCHAR(255) NOT NULL
 );
 
+CREATE TABLE burgers (
+  burger_id SERIAL PRIMARY KEY,
+  order_id INTEGER REFERENCES orders(order_id),
+  toppings VARCHAR(255) NOT NULL
+);
 
-
-ALTER TABLE users
-ADD password_hash VARCHAR; -U postgres
-
-
-ALTER TABLE users
-  DROP COLUMN password;
-
-DROP TABLE users;
+CREATE TABLE delivery_drivers (
+  driver_id SERIAL PRIMARY KEY,
+  first_name VARCHAR(50) NOT NULL,
+  last_name VARCHAR(50) NOT NULL,
+  email VARCHAR(100) UNIQUE NOT NULL,
+  phone_number VARCHAR(20) NOT NULL,
+  license_plate_number VARCHAR(10) NOT NULL,
+  car_make VARCHAR(50) NOT NULL,
+  car_model VARCHAR(50) NOT NULL
+); 
